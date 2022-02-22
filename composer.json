@@ -1,0 +1,8 @@
+{
+    "require": {
+        "bramus/router": "^1.6",
+        "sergeytsalkov/meekrodb": "^2.4",
+        "airmanbzh/php-html-generator": "^1.0",
+        "ezyang/htmlpurifier": "^4.14"
+    }
+}
