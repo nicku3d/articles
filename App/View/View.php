@@ -209,15 +209,23 @@ class View
            $edit = HtmlTag::createElement('button');
            $edit->addElement('a')
                ->set('href', '/article/edit/' . $article->getId())
-               ->text('edit');
+               ->text('edit')
+               ->getParent()
+               ->addClass('btn')
+               ->addClass('btn-info');
            $delete = HtmlTag::createElement('button');
            $delete->text('delete')
-               ->set('onclick', "deleteArticle({$article->getId()})");
+               ->set('onclick', "deleteArticle({$article->getId()})")
+               ->addClass('btn')
+               ->addClass('btn-warning');
 
            $view = HtmlTag::createElement('button');
            $view->addElement('a')
                ->set('href', 'article/view/' . $article->getId())
-               ->text('view');
+               ->text('view')
+               ->getParent()
+               ->addClass('btn')
+               ->addClass('btn-info');
 
             $tbody->addElement('tr')
                 ->addElement('td')->text($article->getTitle())
