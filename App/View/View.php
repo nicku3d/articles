@@ -1,5 +1,8 @@
 <?php
 
+namespace App\View;
+
+use App\Model\Article;
 use HtmlGenerator\HtmlTag;
 
 class View
@@ -62,7 +65,7 @@ class View
 
     public function getScripts() : array
     {
-        return ['/src/main.js'];
+        return ['/js/main.js'];
     }
 
     public function setErrorMessage(string $message) : self
@@ -96,8 +99,22 @@ class View
         $body = HtmlTag::createElement('body');
         $body->addElement($this->getNavBar())
             ->getParent()
+            ->addElement($this->getMessageBox())
+            ->getParent()
             ->addElement($this->getBodyContent()); //TODO action czy coś pewnie jako property
         return $body;
+    }
+
+    public function getMessageBox() : HtmlTag
+    {
+        $box = HtmlTag::createElement('div');
+        $box->addClass('alert')
+            ->addClass('alert-primary')
+            ->set('id', 'message-box')
+            ->set('style', 'display:none;')
+            ->set('role', 'alert');
+
+        return $box;
     }
 
     public function getNavBar() : HtmlTag
@@ -122,7 +139,7 @@ class View
             ->addClass('nav-item')
             ->addClass('nav-link')
             ->set('href', '/article/add')
-            ->text('Add article');
+            ->text('Create Article');
 
         return $nav;
     }
@@ -189,14 +206,17 @@ class View
            $this->validateArticle($article);
 
            //TODO getEditArticleLink(), getViewArticleLink, getDeleteArticleLink lub buttony, buttony lepiej by wygladały pewnie
-           $edit = HtmlTag::createElement('a');
-           $edit->set('href', '/article/edit/' . $article->getId())
+           $edit = HtmlTag::createElement('button');
+           $edit->addElement('a')
+               ->set('href', '/article/edit/' . $article->getId())
                ->text('edit');
-            //TODO tutaj musi być js odpalony od razu
-           $delete = HtmlTag::createElement('a');
-           $delete->text('delete');
-           $view = HtmlTag::createElement('a');
-           $view->set('href', 'article/view/' . $article->getId())
+           $delete = HtmlTag::createElement('button');
+           $delete->text('delete')
+               ->set('onclick', "deleteArticle({$article->getId()})");
+
+           $view = HtmlTag::createElement('button');
+           $view->addElement('a')
+               ->set('href', 'article/view/' . $article->getId())
                ->text('view');
 
             $tbody->addElement('tr')
@@ -204,7 +224,7 @@ class View
                 ->getParent()
                 ->addElement('td')->text($article->getContent())
                 ->getParent()
-                ->addElement('td')->text("[{$view}][{$edit}][{$delete}]");
+                ->addElement('td')->text("{$view}{$edit}{$delete}");
         }
 
         $articleList->addElement($tbody);
@@ -214,16 +234,16 @@ class View
     }
 
 
-    public function getArticleForm(string $action = 'add') : HtmlTag
+    public function getArticleForm(string $action = 'create') : HtmlTag
     {
         //validate action
-        if (!in_array($action, ['add', 'edit'])) {
+        if (!in_array($action, ['create', 'edit'])) {
             //throw albo
-            $action = 'add'; //wyciszenie
+            $action = 'create'; //wyciszenie
         }
 
         $submitText = ucfirst($action) . ' article';
-        $form = HtmlTag::createElement('form');
+        $form = HtmlTag::createElement('div');
 
         $titleInput = HtmlTag::createElement('input');
         $titleInput->addClass('form-control')
@@ -247,9 +267,12 @@ class View
             $contentText->set('placeholder', 'Article content...');
         }
 
-        $form->set('method', 'POST')
-//            ->set('action', '')
-            ->set('id', $action . '-article')
+        $form->set('id', $action . '-article')
+            ->addElement('div')
+            ->set('id', 'id') //TODO should be taken from url but i have no time for that now
+            ->set('style', 'display:none;')
+            ->text(!empty($article) ? $article->getId() : '')
+            ->getParent()
             ->addElement('div')
             ->addClass('form-group')
             ->addElement('label')
@@ -272,6 +295,7 @@ class View
             ->getParent()->getParent()
             ->addElement('button')
             ->set('id', $action . 'Btn')
+            ->set('onclick', $action . 'Article()')
             ->addClass('btn')
             ->addClass('btn-primary')
 //            ->set('type', 'submit')

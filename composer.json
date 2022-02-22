@@ -4,5 +4,10 @@
         "sergeytsalkov/meekrodb": "^2.4",
         "airmanbzh/php-html-generator": "^1.0",
         "ezyang/htmlpurifier": "^4.14"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "App"
+        }
     }
 }

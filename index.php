@@ -1,8 +1,13 @@
 <?php
+
+use App\Controller\ArticleHandler;
+use App\Model\Article;
+use App\View\View;
+
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/Article.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/ArticleHandler.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/View.php';
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/App/Model/Article.php';
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/App/Controller/ArticleHandler.php';
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/App/Model/View.php';
 
 //Narazie podejście MVP to minimum viable product
 //TODO fajnie by było zrobić chociaż KATEGORIE artykułów i sortowanie po kategorii takie rzeczy, byłoby cool
@@ -79,6 +84,7 @@ $router->mount('/api/articles', function () use ($router, $articleHandler, $puri
         // nieużywane
         header('Content-Type: application/json');
         echo json_encode($articleHandler->listArticles(), JSON_PRETTY_PRINT);
+        die;
     });
 
     //GET /articles/{id} - pobiera artykuł o id
@@ -98,6 +104,7 @@ $router->mount('/api/articles', function () use ($router, $articleHandler, $puri
         }
         header('Content-Type: application/json');
         echo json_encode($response, JSON_PRETTY_PRINT);
+        die;
     });
 
     //POST /articles - tworzy artykuł
@@ -108,14 +115,15 @@ $router->mount('/api/articles', function () use ($router, $articleHandler, $puri
         $article = new Article();
         $article->setTitle($title);
         $article->setContent($content);
-        $result = $articleHandler->createArticle($article);
-        if ($result > 0) {
-            $response = ['status' => true];
+        $id = $articleHandler->createArticle($article);
+        if ($id > 0) {
+            $response = ['status' => true, 'message' => 'Succesfully created article with id: ' . $id,];
         } else {
-            $response = ['status' => false];
+            $response = ['status' => false, 'message' => 'Problem occurred while creating article!'];
         }
         header('Content-Type: application/json');
         echo json_encode($response, JSON_PRETTY_PRINT);
+        die;
     });
 
     // PUT /articles/{id} - edytuje artykuł
@@ -129,12 +137,11 @@ $router->mount('/api/articles', function () use ($router, $articleHandler, $puri
         $article->setContent($content);
         try {
             $result = $articleHandler->editArticle($article);
-            $response = ['status' => $result];
+            header("HTTP/1.1 200 OK");
         } catch (Exception $e) {
-            $response = ['status' => false, 'message' => $e->getMessage()];
+            header("HTTP/1.1 404 Not Found");
         }
-        header('Content-Type: application/json');
-        return json_encode($response, JSON_PRETTY_PRINT);
+        die;
     });
 
     //DELETE /articles/{id}
@@ -143,6 +150,7 @@ $router->mount('/api/articles', function () use ($router, $articleHandler, $puri
             $result = $articleHandler->deleteArticle((int)$id);
             $response = [
                 'status' => $result,
+                'message' => 'Succesfully deleted article with id: ' . (int) $id,
             ];
         } catch (InvalidArgumentException $e) {
             $response = [

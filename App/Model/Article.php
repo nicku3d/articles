@@ -1,14 +1,14 @@
 <?php
 
+namespace App\Model;
+
+use JsonSerializable;
+
 class Article implements JsonSerializable
 {
     private int $id;
     private string $title;
     private string $content;
-
-//    public function __construct(array $fields = [])
-//    {
-//    }
 
     /**
      * @return int
@@ -71,7 +71,7 @@ class Article implements JsonSerializable
     /**
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }
