@@ -1,10 +1,8 @@
-Prosty serwis, w którym można tworzyć, edytować i wyświetlać artykuły.
 
-Przed uruchomieniem należy wykonać:
+## Prosty serwis, w którym można tworzyć, edytować i wyświetlać artykuły.
 
-composer install (podczas developmentu był używany composer 2.2.6)
+**Przed uruchomieniem należy wykonać:**
 
-uzupełnić plik config.php danymi dostepowymi do bazy danych
-
-zaimportować baze danych
-
+ - [ ] composer install (podczas developmentu był używany composer w wersji 2.2.6)
+ - [ ] uzupełnić plik config.php danymi dostępowymi do bazy danych
+ - [ ] zaimportować bazę danych
