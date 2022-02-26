@@ -10,8 +10,14 @@ use MeekroDB;
 class ArticleHandler
 {
 
+    /**
+     * @var MeekroDB
+     */
     protected MeekroDB $db;
 
+    /**
+     * @param MeekroDB $db
+     */
     public function __construct(MeekroDB $db)
     {
         $this->db = $db;
@@ -19,9 +25,11 @@ class ArticleHandler
     }
 
     /**
+     * Get article data
+     *
      * @param int $articleId
      * @return Article
-     * @throws Exception
+     * @throws Exception if article does not exist
      */
     public function getArticle(int $articleId): Article
     {
@@ -39,8 +47,10 @@ class ArticleHandler
     }
 
     /**
+     * Create article
+     *
      * @param Article $article
-     * @return int
+     * @return int added article id
      */
     public function createArticle(Article $article): int
     {
@@ -49,37 +59,37 @@ class ArticleHandler
             'content' => $article->getContent(),
         ];
         $this->db->insert('articles', $params);
-//        var_dump('po dodaniu taka zwrotka: ', $result, $this->db->affectedRows());
-//        echo '</br>';
         return $this->db->insertId();
     }
 
     /**
+     * Edit article
+     *
      * @param Article $article
      * @return bool
+     *
+     * @throws Exception if article does not exist
      */
     public function editArticle(Article $article): bool
     {
         $this->checkArticleId($article->getId());
         $this->getArticle($article->getId());
 
-        // TODO można też sprawdzić wczesniej czy taki artykuł w ogóle istnieje za pomocą getArticle :O
-        // albo checkArticle, który bierze getArticle i robi z niego boola xD
         $params = [
             'title' => $article->getTitle(),
             'content' => $article->getContent(),
         ];
         $result = $this->db->update('articles', $params, "id=%i", $article->getId());
-//        var_dump('po edycji taka zwrotka: ', $result, $this->db->affectedRows());
-//        echo '</br>';
         return (bool)$this->db->affectedRows();
     }
 
     /**
+     * Delete article
+     *
      * @param int $articleId
      * @return bool
      *
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException if article id isn't viable
      */
     public function deleteArticle(int $articleId): bool
     {
@@ -88,7 +98,13 @@ class ArticleHandler
         return (bool)$this->db->affectedRows();
     }
 
-    public function listArticles(int $limit = 0)
+    /**
+     * Lists articles
+     *
+     * @param int $limit
+     * @return Article[]
+     */
+    public function listArticles(int $limit = 0) : array
     {
         if ($limit <= 0) {
             $limit = 100;
@@ -113,10 +129,12 @@ class ArticleHandler
     }
 
     /**
+     * Checks is article id is viable
+     *
      * @param int $id
      * @return void
      */
-    protected function checkArticleId(int $id)
+    protected function checkArticleId(int $id) : void
     {
         if ($id <= 0) {
             throw new InvalidArgumentException('Article id must be positive!', 1);
@@ -124,10 +142,12 @@ class ArticleHandler
     }
 
     /**
+     * Checks if article exists
+     *
      * @param $id
      * @return bool
      */
-    public function existsArticle($id)
+    public function existsArticle($id) : bool
     {
         try {
             return (bool) $this->getArticle($id);

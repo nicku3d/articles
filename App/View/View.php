@@ -101,7 +101,7 @@ class View
             ->getParent()
             ->addElement($this->getMessageBox())
             ->getParent()
-            ->addElement($this->getBodyContent()); //TODO action czy coś pewnie jako property
+            ->addElement($this->getBodyContent());
         return $body;
     }
 
@@ -170,9 +170,14 @@ class View
     {
         $article = reset($this->data);
         $this->validateArticle($article);
-        //TODO jakieś opcje edytuj usuń byłby przydatne
+        $edit = $this->getEditArticleButton($article->getId());
+        $delete = $this->getDeleteArticleButton($article->getId());
         $div = HtmlTag::createElement('div');
-        $div->addElement('h2')
+        $div->addElement($edit)
+            ->getParent()
+            ->addElement($delete)
+            ->getParent()
+            ->addElement('h2')
             ->text($article->getTitle())
             ->getParent()
             ->addElement('div')
@@ -205,27 +210,10 @@ class View
         foreach ($this->data as $article) {
            $this->validateArticle($article);
 
-           //TODO getEditArticleLink(), getViewArticleLink, getDeleteArticleLink lub buttony, buttony lepiej by wygladały pewnie
-           $edit = HtmlTag::createElement('button');
-           $edit->addElement('a')
-               ->set('href', '/article/edit/' . $article->getId())
-               ->text('edit')
-               ->getParent()
-               ->addClass('btn')
-               ->addClass('btn-info');
-           $delete = HtmlTag::createElement('button');
-           $delete->text('delete')
-               ->set('onclick', "deleteArticle({$article->getId()})")
-               ->addClass('btn')
-               ->addClass('btn-warning');
-
-           $view = HtmlTag::createElement('button');
-           $view->addElement('a')
-               ->set('href', 'article/view/' . $article->getId())
-               ->text('view')
-               ->getParent()
-               ->addClass('btn')
-               ->addClass('btn-info');
+           //TODO buttony, buttony wyrównać szerokością
+           $edit = $this->getEditArticleButton($article->getId());
+           $view = $this->getViewArticleButton($article->getId());
+           $delete = $this->getDeleteArticleButton($article->getId());
 
             $tbody->addElement('tr')
                 ->addElement('td')->text($article->getTitle())
@@ -239,6 +227,43 @@ class View
         return $articleList;
         //Artykuły
         // tytuł, treść (ograniczona) - teaser albo wcale, opcje -> edytuj usuń, wyświetl
+    }
+
+    public function getDeleteArticleButton(int $articleId) : HtmlTag
+    {
+        $delete = HtmlTag::createElement('button');
+        $delete->text('delete')
+            ->set('onclick', "deleteArticle({$articleId})")
+            ->addClass('btn')
+            ->addClass('btn-warning');
+
+        return $delete;
+    }
+
+    public function getEditArticleButton(int $articleId) : HtmlTag
+    {
+        $edit = HtmlTag::createElement('button');
+        $edit->addElement('a')
+            ->set('href', '/article/edit/' . $articleId)
+            ->text('edit')
+            ->getParent()
+            ->addClass('btn')
+            ->addClass('btn-info');
+
+        return $edit;
+    }
+
+    public function getViewArticleButton(int $articleId) : HtmlTag
+    {
+        $view = HtmlTag::createElement('button');
+        $view->addElement('a')
+            ->set('href', 'article/view/' . $articleId)
+            ->text('view')
+            ->getParent()
+            ->addClass('btn')
+            ->addClass('btn-info');
+
+        return $view;
     }
 
 
@@ -306,7 +331,6 @@ class View
             ->set('onclick', $action . 'Article()')
             ->addClass('btn')
             ->addClass('btn-primary')
-//            ->set('type', 'submit')
             ->text($submitText);;
 
         return $form;
