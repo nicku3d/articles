@@ -4,9 +4,19 @@ namespace App\Config;
 
 class Database {
 
-    public const HOST = 'localhost';
-    public const USER = 'admin';
-    public const PASSWORD = 'admin';
-    public const DB_NAME = 'article';
-
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public static function loadConfig() : array
+    {
+        $dbConfig = require_once 'db-config.php';
+        if (!$dbConfig['host']
+            || !$dbConfig['user']
+            || !$dbConfig['password']
+            || !$dbConfig['db']) {
+            throw new \Exception();
+        }
+        return $dbConfig;
+    }
 }

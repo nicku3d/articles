@@ -21,7 +21,7 @@ class ArticleHandler
     public function __construct(MeekroDB $db)
     {
         $this->db = $db;
-        $this->db->encoding = 'utf8mb4_0900_ai_ci';
+        $this->db->encoding = 'utf8mb4';
     }
 
     /**

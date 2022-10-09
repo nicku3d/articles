@@ -12,6 +12,7 @@ final class ArticleHandlerTest extends TestCase
 
     public function setUp(): void
     {
+        //TODO FIX TESTS implement - new config management
         $db = new MeekroDB(Database::HOST, Database::USER, Database::PASSWORD, Database::DB_NAME);
         $this->articleHandler = new ArticleHandler($db);
     }

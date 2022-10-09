@@ -6,12 +6,12 @@ use App\View\View;
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php';
 
-//Narazie podejście MVP to minimum viable product
-//TODO fajnie by było zrobić chociaż KATEGORIE artykułów i sortowanie po kategorii takie rzeczy, byłoby cool
-//TODO w pliku konfiguracyjnym zawrzeć informacje o tym czy np używać kategorii i użytkowników czy nie
+//TODO add article categories and sorting/filtering
+//TODO add config file that specifies if you want to use categories and users
 
-//TODO wyświeltić komunikat jak nie ma konfiguracji bazy danych
-$db = new MeekroDB(Database::HOST, Database::USER, Database::PASSWORD, Database::DB_NAME);
+$dbConfig = Database::loadConfig();
+
+$db = new MeekroDB($dbConfig['host'], $dbConfig['user'], $dbConfig['password'], $dbConfig['db']);
 $articleHandler = new ArticleHandler($db);
 
 $config = HTMLPurifier_Config::createDefault();

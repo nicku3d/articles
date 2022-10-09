@@ -1,18 +1,27 @@
-
-## Prosty serwis, w którym można tworzyć, edytować i wyświetlać artykuły.
-
-**Przed uruchomieniem należy wykonać:**
-
- - [ ] composer install (podczas developmentu był używany composer w wersji 2.2.6)
- - [ ] uzupełnić plik App/Config/Database.php danymi dostępowymi do bazy danych
- - [ ] zaimportować bazę danych (articles_db_dump.sql)
-
-
-
 ## Simple service in which one can create, edit and view articles
+
+**Project specs:**
+- PHP VERSION: 8.1.11
+- MYSQL VERSION: 8.0.30
+- COMPOSER VERSION: 2.2.6
 
 **Before using:**
 
-- [ ] composer install (composer in version 2.2.6)
-- [ ] change data in App/Config/Database.php to your database credentials
-- [ ] import databse from file articles_db_dump.sql
+1. composer install
+1. create config file named "db-config.php" in ./App/Config/ directory with your database credentials
+
+      EXAMPLE db-config.php:
+      
+      ```php
+      <?php
+      return [
+       'host' => 'db',
+       'user' => 'admin',
+       'password' => 'admin',
+       'db' => 'article',
+      ];
+      ```
+1. Start apache and database with command:
+
+        docker compose up
+1. create new schema e.g 'article' and import database structure from file articles_db_dump.sql
