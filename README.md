@@ -15,7 +15,7 @@
       ```php
       <?php
       return [
-       'host' => 'db',
+       'host' => '172.20.0.2',
        'user' => 'admin',
        'password' => 'admin',
        'db' => 'article',
@@ -24,4 +24,7 @@
 1. Start apache and database with command:
 
         docker compose up
-1. create new schema e.g 'article' and import database structure from file articles_db_dump.sql
+1. Create new schema e.g 'article' and import database structure from file articles_db_dump.sql
+1. If you want you can run PHP unit tests from docker container:
+
+        docker exec -it php-apache ./vendor/phpunit/phpunit/phpunit ./tests

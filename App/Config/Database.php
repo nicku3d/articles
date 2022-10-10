@@ -5,12 +5,18 @@ namespace App\Config;
 class Database {
 
     /**
-     * @return array
+     * @param string $filename config file in App/Config directory
+     *
+     * @return array db config data
+     *
      * @throws \Exception
      */
-    public static function loadConfig() : array
+    public static function loadConfig(string $filename = 'db-config.php') : array
     {
-        $dbConfig = require_once 'db-config.php';
+        if (!defined('__ROOT__')) {
+            define('__ROOT__', dirname(dirname(__FILE__)));
+        }
+        $dbConfig = require __ROOT__ . '/Config/' . basename($filename);
         if (!$dbConfig['host']
             || !$dbConfig['user']
             || !$dbConfig['password']

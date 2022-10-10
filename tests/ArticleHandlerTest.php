@@ -12,14 +12,17 @@ final class ArticleHandlerTest extends TestCase
 
     public function setUp(): void
     {
-        //TODO FIX TESTS implement - new config management
-        $db = new MeekroDB(Database::HOST, Database::USER, Database::PASSWORD, Database::DB_NAME);
+        $dbConfig = Database::loadConfig();
+        $db = new MeekroDB($dbConfig['host'], $dbConfig['user'], $dbConfig['password'], $dbConfig['db']);
         $this->articleHandler = new ArticleHandler($db);
     }
 
     public function testCanBeCreatedWithMeekroDbInstance()
     {
-        $db = new MeekroDB(Database::HOST, Database::USER, Database::PASSWORD, Database::DB_NAME);
+        $dbConfig = Database::loadConfig();
+
+        $db = new MeekroDB($dbConfig['host'], $dbConfig['user'], $dbConfig['password'], $dbConfig['db']);
+        $db->queryOneRow('SELECT 1 FROM articles');
         $articleHandler = new ArticleHandler($db);
 
         $this->assertInstanceOf(

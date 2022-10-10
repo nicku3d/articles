@@ -25,10 +25,14 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - backend
+      backend:
+        ipv4_address: 172.20.0.2
     volumes:
       - db-volume:/var/lib/mysql
 volumes:
   db-volume:
 networks:
-  backend: {}
+  backend:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
